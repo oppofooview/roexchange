@@ -2,7 +2,7 @@ import sqlalchemy
 
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -16,6 +16,8 @@ class Info(Base):
     timestamp = Column(Integer)
     price = Column(Integer)
     volume = Column(Integer)
+    __table_args__ = (UniqueConstraint('item_name', 'timestamp', name='item_timestamp_uc'),
+                     )
                   
 engine = create_engine('sqlite:///exchange.db')
 Base.metadata.create_all(engine)
