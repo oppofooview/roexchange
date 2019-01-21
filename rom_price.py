@@ -6,42 +6,22 @@ import sys
 from datetime import datetime
 
 url = "https://api.poporing.life/get_price_history/"
-item_list = [
-'crystal_mirror',
-'soft_feather',
-'orc_claw',
-'bell',
-'rose_quartz',
-'antenna',
-'cursed_ruby',
-'raccoon_leaf',
-'bloody_rune',
-'light_granule',
-'wrapping_lace',
-'star_crumb',
-'pearl',
-'parts',
-'heroic_emblem',
-'dragon_scale',
-'fabric',
-'four_leaf_clover',
-'emperium',
-'steel',
-'coal',
-'mercury',
-'biotite',
-'time_twister',
-'key_of_clock_tower',
-'four_leaf_clover'
-]
+mats_file = 'mats.txt'
+cards_file = 'cards.txt'
+item_list = []
+with open(mats_file, 'r') as f:
+    for mat in f:
+        mat = mat.replace(' ', '_').replace('\n', '').lower()
+        item_list.append(mat)
+
 with open('cards.txt', 'r') as f:
     for card in f:
         card = card.replace('__', '_').replace('\n','')
         item_list.append(card)
 
-for item in item_list:
-    print(item)
-
+#for item in item_list:
+    #print(item)
+#sys.exit(0)
 current_time = datetime.now().strftime('%Y%m%d') 
 filename = "results_{0}.txt".format(current_time)
 f = open(filename, "w")
@@ -54,7 +34,6 @@ try:
         time.sleep(1)
         if r.status_code:  # Status code of response
             data = r.json()  # Content of response
-            print("{0}:".format(data['data']['item_name']))
             f.write("[{0}]\n".format(data['data']['item_name']))
             histories = sorted(data['data']['data_list'], key=lambda i:i['timestamp'], reverse=True)
             for history in histories:
