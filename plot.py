@@ -9,10 +9,12 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import sys
 
 db_name = "exchange.db"
 engine_name = 'sqlite:///exchange.db'
-imagedir = 'dist/images/'
+matsdir = 'dist/images/Materials/'
+cardsdir = 'dist/images/Cards/'
 
 def query_to_dict(rset):
     result = defaultdict(list)
@@ -34,6 +36,7 @@ def process_df(df):
 
 def plot_stats(data):
     fig, ax1 = plt.subplots(figsize=(8, 6))
+    plt.tight_layout()
     plt.xticks(rotation=45)
     ax2 = ax1.twinx()
     ax1.bar(data['date'].apply(mdates.date2num), data['volume'], color=(190/255,190/255,190/255,0.7), label='Volume')
@@ -65,18 +68,48 @@ if __name__ == '__main__':
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
 
+    # create and save plots for mats
     mats = session.query(Info).join(Item, Info.item_name==Item.info_name).filter(Item.item_type=='Mat').all()
     df = pd.DataFrame(query_to_dict(mats))
     df = process_df(df).reset_index()
     matnames = df['item_name'].unique()
     matdfs = [df[df['item_name']==x] for x in matnames]
+    print(matnames)
 
     for matdf in matdfs:
         plot_stats(matdf)
-    
+
     for i in plt.get_fignums():
-        plt.figure(i)
-        plt.savefig('{}figure_{}.png'.format(imagedir, i))
+        fig = plt.figure(i)
+        axes = fig.axes
+        if len(axes) < 1:
+            continue
+        print('saving figure {}, {}'.format(i, axes[0].get_title()))
+        plt.savefig('{}{}.png'.format(matsdir, axes[0].get_title()), bbox_inches='tight')
+
+    plt.close('all')
+
+    # create and save plots for cards
+    slots = [x[0] for x in session.query(Item.slot).filter(Item.item_type=='Card').distinct().all()]
+    for slot in slots:
+        c = (session.query(Info).join(Item, Info.item_name==Item.info_name)
+                 .filter(Item.item_type=='Card')
+                 .filter(Item.slot==slot).all())
+        df_slot = pd.DataFrame(query_to_dict(c))
+        df_slot = process_df(df_slot).reset_index()
+        cardnames = df_slot['item_name'].unique()
+        carddfs = [df_slot[df_slot['item_name']==x] for x in cardnames]
     
-    #plt.tight_layout()
-    #plt.show()
+        for carddf in carddfs:
+            plot_stats(carddf)
+        
+        for i in plt.get_fignums():
+            fig = plt.figure(i)
+            axes = fig.axes
+            if len(axes) < 1:
+                continue
+            print('saving figure {}, {}'.format(i, axes[0].get_title()))
+            plt.savefig('{}{}/{}.png'.format(cardsdir, slot, axes[0].get_title()), bbox_inches='tight')
+
+        plt.close('all')    
+        #plt.show()
