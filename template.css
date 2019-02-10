@@ -1,0 +1,11 @@
+div { white-space: nowrap; 
+letter-spacing: -0.3em;
+word-spacing : -0.3em;   
+}
+
+/* inline hacks for IE6/7 */
+figure { white-space: normal; display: inline-block; *zoom: 1; *display: inline; margin: 0; padding: 0; 
+letter-spacing: normal;
+word-spacing : normal;  
+}
+
