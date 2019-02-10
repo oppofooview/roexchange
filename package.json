@@ -1,7 +1,6 @@
 {
   "name": "roexchange",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "deploy": "gh-pages -d dist"
@@ -12,5 +11,14 @@
   "homepage": "https://kuity.github.io/ROexchange",
   "dependencies": {
     "gh-pages": "^2.0.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuity/roexchange.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kuity/roexchange/issues"
+  },
+  "description": ""
 }

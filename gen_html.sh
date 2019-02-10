@@ -1,4 +1,4 @@
-#1/bin/bash
+#!/bin/bash
 
 cd dist
 declare -a pages=("mats.html" "weapon_cards.html" "armor_cards.html" \
@@ -18,9 +18,14 @@ do
 
   echo "<html>" > $filename
   echo "  <head>" >> $filename
-  echo "    <title>$title</title>" >> $filename
+  echo "  <title>$title</title>" >> $filename
+  echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"template.css\"/>" >> $filename
+  echo "  </head>" >> $filename
   echo "  <body>" >> $filename
-  find $folder -type f -printf "      <img src=\"$folder/%f\"/^>\n" >> $filename
+  #find $folder -type f -printf "        <img src=\"$folder/%f\">\n" >> $filename
+  find $folder -name "*.png" \
+    -exec sh -c 'printf "    <figure>\n      <img src=\"%s\">\n" "${0}"' {} ';' \
+    -exec sh -c 'f=$(basename "{}" .png);echo "      <figcaption>$f</figcaption>\n    </figure>" | tr _ " "' ';' >> $filename
   echo "  </body>" >> $filename
   echo "</html>" >> $filename
 done

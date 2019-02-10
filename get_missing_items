@@ -1,0 +1,5 @@
+.mode csv
+.output missing_cards.csv
+select distinct(item_name) from info where not exists(select 1 from item where item.info_name = info.item_name);
+.output stdout
+.quit

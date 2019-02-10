@@ -31,13 +31,14 @@ if __name__ == '__main__':
                 carddeposit = attrs[3]
                 cardtype = attrs[4]
                 cardslot = attrs[5]
+                cardrarity = attrs[6]
                 cardshortname = cardname.replace(' ', '_').lower()
                 
                 item = session.query(Item).filter_by(name=cardname).first()
                 if not item:
                     newitem = Item(name=cardname, item_type='Card', info_name=cardshortname,
                                 unlock_effect=cardunlock, deposit_effect=carddeposit,
-                                source=cardtype, slot=cardslot)
+                                source=cardtype, slot=cardslot, rarity=cardrarity)
                     session.add(newitem)
         print('Cards loading completed')
     elif args['item'] == 'mat':
