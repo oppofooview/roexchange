@@ -13,12 +13,12 @@ if __name__ == '__main__':
     session = DBSession()
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--item', help='Enter card or mat', default='mat')
+    parser.add_argument('-i', '--item', help='Enter card or mat or bp', default='mat')
     args = vars(parser.parse_args())
 
     if args['item'] == 'card':
         print('Loading card info into db')
-        file_name = 'card_info.txt'
+        file_name = 'items/card_info.txt'
         delimiter = '|'
         
         with open(file_name, 'r') as f:
@@ -43,16 +43,29 @@ if __name__ == '__main__':
         print('Cards loading completed')
     elif args['item'] == 'mat':
         print('Loading mat info into db')
-        file_name = 'mats.txt'
+        file_name = 'items/mats.txt'
         with open(file_name, 'r') as f:
             for line in f:
                 line = line.replace('\n', '')
-                matname = line
-                matshortname = line.replace(' ', '_').lower()
+                matname = line.replace('_', ' ').capitalize()
+                matshortname = line 
                 item = session.query(Item).filter_by(name=matname).first()
                 if not item:
                     newitem = Item(name=matname, item_type='Mat', info_name=matshortname)
                     session.add(newitem)
         print('Mats loading completed')
+    elif args['item'] == 'bp':
+        print('Loading bp info into db')
+        file_name = 'items/bp.txt'
+        with open(file_name, 'r') as f:
+            for line in f:
+                line = line.replace('\n', '')
+                matname = line.replace('_', ' ').capitalize()
+                matshortname = line 
+                item = session.query(Item).filter_by(name=matname).first()
+                if not item:
+                    newitem = Item(name=matname, item_type='Blueprint', info_name=matshortname)
+                    session.add(newitem)
+        print('Blueprint loading completed')
     
     session.commit()

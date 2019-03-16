@@ -1,12 +1,13 @@
 #!/bin/bash
 
 cd dist
-declare -a pages=("mats.html" "weapon_cards.html" "armor_cards.html" \
+declare -a pages=("mats.html" "blueprints.html" "weapon_cards.html" "armor_cards.html" \
   "offhand_cards.html" "headgear_cards.html" "accessory_cards.html" \
-  "footgear_cards.html")
-declare -a folders=("images/Materials" "images/Cards/Weapon" \
+  "footgear_cards.html" "garment_cards.html" "cards_by_rarity.html")
+declare -a folders=("images/Materials" "images/Blueprints" "images/Cards/Weapon" \
   "images/Cards/Armor" "images/Cards/Offhand" "images/Cards/Headgear" \
-  "images/Cards/Accessory" "images/Cards/Footgear")
+  "images/Cards/Accessory" "images/Cards/Footgear" "images/Cards/Garment" \
+  "images/Cards/rarity")
 
 for (( i=0; i<${#pages[*]}; ++i )); 
 #i in "${arr[@]}"
@@ -15,7 +16,6 @@ do
   folder=${folders[$i]}
   title=`echo $filename | cut -d'.' -f 1`
   echo "$filename, $folder, $title" 
-
   echo "<html>" > $filename
   echo "  <head>" >> $filename
   echo "  <title>$title</title>" >> $filename
